@@ -1,5 +1,4 @@
 import React from "react";
-import img1 from "../assets/img1.jpg";
 
 const Blog = (props) => {
   return (
@@ -9,7 +8,6 @@ const Blog = (props) => {
         <h4>Category: {props.category}</h4>
         <p>Title: {props.title}</p>
         <p>Description: {props.desc}</p>
-        <p>Author: {props.auth}</p>
       </div>
     </>
   );
