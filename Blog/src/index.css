@@ -1,0 +1,61 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, "Poppins", Helvetica, sans-serif;
+  margin: 20px;
+  padding: 12px;
+}
+
+.container {
+  margin: 1rem;
+  padding: 12px 20px;
+  border: 1px solid black;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.sub-container {
+  border: 1px solid black;
+  margin: 20px;
+  padding: 20px;
+}
+
+.img-cont {
+  border: 1px solid black;
+  margin: 15px;
+  padding: 20px;
+  position: relative;
+  color: white;
+}
+
+.img-cont img {
+  width: 50%;
+}
+
+.img-cont h4 {
+  position: absolute;
+  bottom: 28%;
+  left: 5%;
+  font-weight: 100;
+}
+
+.img-cont p {
+  color: black;
+}
+
+.image-container {
+  border: 1px solid black;
+  margin: 20px;
+  padding: 30px;
+  position: relative;
+}
+
+.image-container p {
+  position: absolute;
+  bottom: 40%;
+  left: 17%;
+}

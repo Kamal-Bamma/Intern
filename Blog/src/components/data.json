@@ -1,0 +1,26 @@
+[
+  {
+    "category": "Earth-1",
+    "title": "Article 1",
+    "desc": "This is Article 1",
+    "image": "./assets/img1.jpg",
+    "images": "./assets/react.jpg",
+    "author": "Chandler"
+  },
+  {
+    "category": "Earth-2",
+    "title": "Article 2",
+    "desc": "This is Article 2",
+    "image": " ./assets/img2.jpg",
+    "images": "./assets/react.jpg",
+    "author": "Joe"
+  },
+  {
+    "category": "Earth-3",
+    "title": "Article 3",
+    "desc": "This is Article 3",
+    "image": " ./assets/img3.jpg",
+    "images": "./assets/react.jpg",
+    "author": "Ross"
+  }
+]
