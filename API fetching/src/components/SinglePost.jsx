@@ -1,31 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import { useParams, Link } from "react-router-dom";
-
-// function SinglePost() {
-//   const { id } = useParams();
-//   const [post, setPost] = useState(null);
-
-//   useEffect(() => {
-//     fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
-//       .then((response) => response.json())
-//       .then((data) => setPost(data));
-//   }, [id]);
-
-//   if (!post) {
-//     return <div>Loading...</div>;
-//   }
-
-//   return (
-//     <div>
-//       <h1>{post.title}</h1>
-//       <p>{post.body}</p>
-//       <Link to="/">Back to Post List</Link>
-//     </div>
-//   );
-// }
-
-// export default SinglePost;
-
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
@@ -63,9 +35,12 @@ function SinglePost() {
 
   return (
     <div>
-      <h1>{post.id}</h1>
-      <h1>{post.title}</h1>
-      <p>{post.body}</p>
+      <h1>ID: {post.id}</h1>
+      <h2>Title: {post.title}</h2>
+      <p>
+        <b>Body:</b> {post.body}
+      </p>
+      <br />
       <Link to="/">Back to Post List</Link>
     </div>
   );
