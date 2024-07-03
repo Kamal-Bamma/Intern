@@ -1,4 +1,4 @@
-body {
+/* body {
   font-family: Arial, sans-serif;
   background-color: #f8f9fa;
   margin: 0;
@@ -29,7 +29,7 @@ body {
 }
 
 .form-control {
-  width: 100%;
+  width: 95%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -47,7 +47,7 @@ body {
   color: #fff;
   background-color: #007bff;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   text-align: center;
 }
@@ -68,7 +68,7 @@ body {
 
 .item {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eee;
 }
 
 .item h3 {
@@ -78,4 +78,4 @@ body {
 
 .item p {
   margin: 0;
-}
+} */
