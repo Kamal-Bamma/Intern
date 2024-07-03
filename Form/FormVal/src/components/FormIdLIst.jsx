@@ -5,8 +5,8 @@ import ItemList from "./ItemList";
 const FormWithList = () => {
   const [items, setItems] = useState([]);
   const [nextId, setNextId] = useState(1);
-
-  // *Load items from localStorage on component mount
+  const [editMode, setEditMode] = useState(false);
+  const [editItemData, setEditItemData] = useState({});
 
   useEffect(() => {
     const storedItems = JSON.parse(localStorage.getItem("items")) || [];
@@ -16,10 +16,6 @@ const FormWithList = () => {
     );
   }, []);
 
-  // *Save items to localStorage whenever items change
-
-  // useEffect(() => {}, [items]);
-
   const addItem = (title, body) => {
     const newItem = {
       id: nextId,
@@ -27,14 +23,44 @@ const FormWithList = () => {
       body,
     };
     localStorage.setItem("items", JSON.stringify([...items, newItem]));
-    // setItems();
+    setItems([...items, newItem]);
     setNextId(nextId + 1);
+  };
+
+  const updateItem = (id, title, body) => {
+    const updatedItems = items.map((item) =>
+      item.id === id ? { ...item, title, body } : item
+    );
+    setItems(updatedItems);
+    setEditMode(false);
+    localStorage.setItem("items", JSON.stringify(updatedItems));
+    setEditItemData({});
+  };
+
+  const deleteItem = (id) => {
+    const deleted = items.filter((item) => item.id !== id);
+    setItems(deleted);
+    localStorage.setItem("items", JSON.stringify(deleted));
+  };
+
+  const startEditItem = (item) => {
+    setEditItemData(item);
+    setEditMode(true);
   };
 
   return (
     <div className="container">
-      <Form addItem={addItem} />
-      <ItemList items={items} />
+      <Form
+        addItem={addItem}
+        editMode={editMode}
+        updateItem={updateItem}
+        editItemData={editItemData}
+      />
+      <ItemList
+        items={items}
+        deleteItem={deleteItem}
+        startEditItem={startEditItem}
+      />
     </div>
   );
 };

@@ -82,3 +82,41 @@ body {
 .item p {
   margin: 0;
 }
+
+.btn-Container {
+  margin-top: -5%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.btn-edit,
+.btn-del {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-edit:hover,
+.btn-del:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.1);
+}
+
+.btn-edit svg,
+.btn-del svg {
+  width: 20px;
+  height: 20px;
+  color: #333;
+}
+
+.btn-edit:hover svg,
+.btn-del:hover svg {
+  color: #007bff; /* Change color on hover for edit button */
+}
+
+.btn-del:hover svg {
+  color: #ff0000; /* Change color on hover for delete button */
+}
