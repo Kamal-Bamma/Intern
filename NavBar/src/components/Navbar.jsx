@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ fEmail, handleLogout }) => {
   return (
     <>
       <div className="navbar">
@@ -17,6 +17,16 @@ const Navbar = () => {
           </li>
           <li>
             <Link to="/login">Login</Link>
+          </li>
+          <li>
+            {fEmail && (
+              <div>
+                <p className="logged">Logged in as: {fEmail}</p>
+                <button className="logout-button" onClick={handleLogout}>
+                  Logout
+                </button>
+              </div>
+            )}
           </li>
         </ul>
       </div>

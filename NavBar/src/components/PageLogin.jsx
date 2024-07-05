@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const Login = () => {
+const Login = ({ setFEmail }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -10,14 +10,10 @@ const Login = () => {
     const storedPassword = localStorage.getItem("password");
     if (storedEmail) setEmail(storedEmail);
     if (storedPassword) setPassword(storedPassword);
-    setEmail("");
-    setPassword("");
   }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setEmail("");
-    setPassword("");
 
     const validationErrors = validate({ email, password });
     if (Object.keys(validationErrors).length === 0) {
@@ -26,6 +22,10 @@ const Login = () => {
 
       localStorage.setItem("email", email);
       localStorage.setItem("password", password);
+      setFEmail(email);
+
+      setEmail("");
+      setPassword("");
     } else {
       setErrors(validationErrors);
     }

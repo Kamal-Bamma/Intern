@@ -6,11 +6,18 @@ import Sidebar from "./components/Sidebar";
 import Login from "./components/PageLogin";
 
 function App() {
+  const [fEmail, setFEmail] = useState(localStorage.getItem("email") || "");
+
+  const handleLogout = () => {
+    localStorage.removeItem("email");
+    localStorage.removeItem("password");
+    setFEmail("");
+  };
   return (
     <>
-      <Navbar />
+      <Navbar fEmail={fEmail} handleLogout={handleLogout} />
       <Sidebar />
-      <Routed />
+      <Routed setFEmail={setFEmail} />
     </>
   );
 }
