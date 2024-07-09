@@ -39,6 +39,12 @@
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin: 2px 0px;
+}
+
+.btn-link {
+  text-decoration: none;
+  color: white;
 }
 
 .login-container button:hover {
