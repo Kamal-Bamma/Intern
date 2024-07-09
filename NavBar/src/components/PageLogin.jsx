@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = ({ setFEmail }) => {
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,14 +28,14 @@ const Login = ({ setFEmail }) => {
 
     try {
       await axios
-        .post("http:/localhost:8000/", {
+        .post("http://localhost:8000/", {
           email,
           password,
         })
         .then((res) => {
-          if ((res.data = "Exist")) {
-            history("/home", { state: { id: email } });
-          } else if ((res.data = "Not-Exist")) {
+          if (res.data === "Exist") {
+            navigate("/", { state: { id: email } });
+          } else if (res.data === "Not-Exist") {
             alert("User have not sign up");
           }
         })

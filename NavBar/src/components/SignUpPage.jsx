@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Signup = ({ setFEmail }) => {
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,15 +13,15 @@ const Signup = ({ setFEmail }) => {
 
     try {
       await axios
-        .post("http:/localhost:8000/signup", {
+        .post("http://localhost:8000/signuppage", {
           email,
           password,
         })
         .then((res) => {
-          if ((res.data = "Exist")) {
+          if (res.data === "Exist") {
             alert("User already exists");
-          } else if ((res.data = "Not-Exist")) {
-            history("/home", { state: { id: email } });
+          } else if (res.data === "Not-Exist") {
+            navigate("/", { state: { id: email } });
           }
         })
 
