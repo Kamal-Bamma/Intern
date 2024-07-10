@@ -7,6 +7,7 @@ import Home from "./Home";
 import About from "./About";
 import Contact from "./Contact";
 import SignUpPage from "./SignUpPage";
+import UsersDetails from "./Users";
 
 function Routed({ setFEmail }) {
   return (
@@ -19,6 +20,7 @@ function Routed({ setFEmail }) {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/email" element={<Email />} />
+        <Route path="/userDetails" element={<UsersDetails />} />
       </Routes>
     </>
   );

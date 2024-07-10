@@ -15,6 +15,9 @@ const Sidebar = () => {
           <li>
             <Link to="/email">Email</Link>
           </li>
+          <li>
+            <Link to="/userDetails">Users</Link>
+          </li>
         </ul>
       </div>
     </>

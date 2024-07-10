@@ -64,3 +64,65 @@ h2 {
 .logged {
   color: aliceblue;
 }
+
+.Container {
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-container {
+  margin-left: 25%;
+  margin-top: -40%;
+  width: 50%;
+  text-align: center;
+}
+
+.user-container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.user-container ul {
+  list-style-type: none;
+}
+
+.user-container li {
+  background-color: #f1f1f1;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.user-container li:nth-child(odd) {
+  background-color: #e9e9e9;
+}
+
+button {
+  border: none;
+  border-radius: 6px;
+  color: black;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  font-size: 12px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #fff;
+}
+
+button:focus {
+  outline: none;
+}
+
+button svg {
+  width: 16px;
+  height: 16px;
+}
