@@ -18,9 +18,9 @@ const Signup = ({ setFEmail }) => {
           password,
         })
         .then((res) => {
-          if (res.data === "Exist") {
+          if (res.data == "Exist") {
             alert("User already exists");
-          } else if (res.data === "Not-Exist") {
+          } else if (res.data == "Not-Exist") {
             navigate("/", { state: { id: email } });
           }
         })

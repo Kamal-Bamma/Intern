@@ -33,9 +33,9 @@ const Login = ({ setFEmail }) => {
           password,
         })
         .then((res) => {
-          if (res.data === "Exist") {
+          if (res.data == "Exist") {
             navigate("/", { state: { id: email } });
-          } else if (res.data === "Not-Exist") {
+          } else if (res.data == "Not-Exist") {
             alert("User have not sign up");
           }
         })
