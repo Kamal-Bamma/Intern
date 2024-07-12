@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const { connectMongoDb } = require("./connection");
 const Item = require("./models/Items");
 const User = require("./models/users");
@@ -6,6 +7,9 @@ const bcrypt = require("bcrypt");
 
 const app = express();
 const PORT = 8000;
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views")); // Ensure you have `path` required at the top of your file
 
 // Middleware to parse JSON request bodies
 app.use(express.urlencoded({ extended: true }));
@@ -41,8 +45,8 @@ app.get("/index", (req, res) => {
 // Routers add to Display, create and login user account
 app.get("/users", async (req, res) => {
   try {
-    const items = await User.find();
-    res.json(items);
+    const users = await User.find();
+    res.render("users", { users });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
@@ -59,7 +63,7 @@ app.post("/register", async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new User({ name, email, password: hashedPassword });
       await newUser.save();
-      return res.json("User added successfully!");
+      res.redirect("/login");
     }
   } catch (e) {
     return res.status(400).json({ message: e.message });
@@ -83,6 +87,26 @@ app.post("/login", async (req, res) => {
     }
   } catch (e) {
     res.status(400).json({ message: e.message });
+  }
+});
+
+// Route to display edit form for a user
+app.get("/edit/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.render("edit", { user });
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
+
+// Route to handle delete request for a user
+app.post("/delete/:id", async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.redirect("/users");
+  } catch (e) {
+    res.status(500).json({ message: e.message });
   }
 });
 
