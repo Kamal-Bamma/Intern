@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Item Form</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 80%;
+        max-width: 600px;
+        margin: 100px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        font-size: 24px;
+        text-align: center;
+      }
+      form {
+        margin-top: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+      input[type="text"],
+      input[type="number"] {
+        width: calc(100% - 20px);
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>List of Items</h1>
+      <form action="/addItems" method="post">
+        <label for="itemsName">Name:</label>
+        <input type="text" id="itemsName" name="item_name" />
+
+        <label for="itemsPrice">Price:</label>
+        <input type="text" id="itemsPrice" name="item_price" />
+
+        <label for="itemQuantity">Quantity:</label>
+        <input type="number" id="itemQuantity" name="item_quantity" />
+
+        <button type="submit">Add</button>
+      </form>
+    </div>
+  </body>
+</html>

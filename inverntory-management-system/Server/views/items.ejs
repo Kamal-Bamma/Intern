@@ -3,9 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Item List</title>
-    <link rel="stylesheet" href="/index.css" />
-    <!-- <style>
+    <title>Item</title>
+    <style>
       body {
         font-family: Arial, sans-serif;
         background-color: #f8f9fa;
@@ -60,10 +59,9 @@
       .buy-button:hover {
         background-color: #218838;
       }
-    </style> -->
+    </style>
   </head>
   <body>
-    <%- include("navbar.ejs") -%>
     <div class="container">
       <h1>Item List</h1>
       <% items.forEach(item => { %>
@@ -73,8 +71,6 @@
           <li><strong>Price:</strong> <%= item.item_price %></li>
           <li><strong>Quantity:</strong> <%= item.item_quantity %></li>
         </ul>
-        <input type="number" class="input-number" placeholder="Quantity" />
-        <button class="buy-button">Buy</button>
       </div>
       <% }); %>
     </div>

@@ -1,0 +1,50 @@
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.item ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.item ul li {
+  margin: 5px 0;
+}
+
+.input-number {
+  width: 100px;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.buy-button {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.buy-button:hover {
+  background-color: #218838;
+}

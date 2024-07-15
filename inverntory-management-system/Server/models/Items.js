@@ -11,7 +11,7 @@ const itemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  item_number: {
+  item_quantity: {
     type: Number,
     required: true,
   },

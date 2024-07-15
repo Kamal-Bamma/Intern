@@ -14,6 +14,7 @@ app.set("views", path.join(__dirname, "views")); // Ensure you have `path` requi
 // Middleware to parse JSON request bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "css")));
 
 // MongoDB connection
 connectMongoDb("mongodb://127.0.0.1:27017/Inventory")
@@ -27,7 +28,8 @@ connectMongoDb("mongodb://127.0.0.1:27017/Inventory")
 // Home route
 
 app.get("/", (req, res) => {
-  res.send("Hello Programmer");
+  // res.send("Hello Programmer");
+  res.render("navbar.ejs");
 });
 
 app.get("/register", (req, res) => {
@@ -38,15 +40,17 @@ app.get("/login", (req, res) => {
   res.render("login.ejs");
 });
 
-app.get("/index", (req, res) => {
-  const items = [
-    { name: "Chair", price: "Rs.5000", number: 20 },
-    { name: "Desk", price: "Rs.7000", number: 10 },
-    { name: "Monitor", price: "Rs.15000", number: 15 },
-    { name: "Fan", price: "Rs.3500", number: 12 },
-  ];
-  res.render("index", { items });
+app.get("/addItems", (req, res) => {
+  res.render("addItems.ejs");
 });
+
+app.get("/order", (req, res) => {
+  res.render("order.ejs");
+});
+
+// app.get("/navbar", (req, res) => {
+//   res.render("/navbar.ejs");
+// });
 
 // Routers add to Display, create and login user account
 app.get("/users", async (req, res) => {
@@ -144,6 +148,43 @@ app.post("/delete/:id", async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.redirect("/users");
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
+
+// GET route to fetch items
+app.get("/index", async (req, res) => {
+  try {
+    const items = await Item.find();
+    res.render("index", { items });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+app.get("/items", async (req, res) => {
+  try {
+    const items = await Item.find();
+    res.render("items", { items });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// POST route to add a new item
+app.post("/addItems", async (req, res) => {
+  const { item_name, item_price, item_quantity } = req.body;
+
+  try {
+    const check = await Item.findOne({ item_name });
+    if (check) {
+      return res.status(400).json("Item is already added");
+    } else {
+      const newItem = new Item({ item_name, item_price, item_quantity });
+      await newItem.save();
+      res.redirect("/addItems");
+    }
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
