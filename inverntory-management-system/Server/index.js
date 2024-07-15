@@ -39,7 +39,13 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/index", (req, res) => {
-  res.render("index.ejs");
+  const items = [
+    { name: "Chair", price: "Rs.5000", number: 20 },
+    { name: "Desk", price: "Rs.7000", number: 10 },
+    { name: "Monitor", price: "Rs.15000", number: 15 },
+    { name: "Fan", price: "Rs.3500", number: 12 },
+  ];
+  res.render("index", { items });
 });
 
 // Routers add to Display, create and login user account
@@ -138,39 +144,6 @@ app.post("/delete/:id", async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.redirect("/users");
-  } catch (e) {
-    res.status(500).json({ message: e.message });
-  }
-});
-
-// Route to add a new item and display item
-app.post("/items", async (req, res) => {
-  const { item_name, item_price, item_number } = req.body;
-
-  const newItem = new Item({
-    item_name,
-    item_price,
-    item_number,
-  });
-
-  try {
-    const check = await Item.findOne({ item_name: item_name });
-    if (check) {
-      res.json("Exist");
-    } else {
-      res.json("Items is added..!");
-      await Item.insertMany([newItem]);
-    }
-  } catch (e) {
-    res.status(400).json({ message: e.message });
-  }
-});
-
-// Route to get all items
-app.get("/items", async (req, res) => {
-  try {
-    const items = await Item.find();
-    res.json(items);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
