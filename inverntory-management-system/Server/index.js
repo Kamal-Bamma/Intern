@@ -90,11 +90,44 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Route to display edit form for a user
+// Route to display users
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.render("users", { users }); // Pass users data to the users.ejs template
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
+
 app.get("/edit/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User on found" });
+    }
     res.render("edit", { user });
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
+
+// Route to handle edit form submission
+app.post("/edit/:id", async (req, res) => {
+  const { name, email } = req.body;
+
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.name = name;
+    user.email = email;
+    await user.save();
+
+    res.redirect("/users");
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
