@@ -5,77 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Item List</title>
     <link rel="stylesheet" href="/index.css" />
-    <!-- <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 0;
-      }
-
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-
-      h1 {
-        text-align: center;
-        color: #333;
-      }
-
-      .item {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 15px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      .item ul {
-        list-style-type: none;
-        padding: 0;
-      }
-
-      .item ul li {
-        margin: 5px 0;
-      }
-
-      .input-number {
-        width: 100px;
-        padding: 5px;
-        margin-right: 10px;
-      }
-
-      .buy-button {
-        background-color: #28a745;
-        color: #fff;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-
-      .buy-button:hover {
-        background-color: #218838;
-      }
-    </style> -->
   </head>
   <body>
-    <%- include("navbar.ejs") -%>
+    <%- include("navbar",{user:user}) -%>
     <div class="container">
       <h1>Item List</h1>
       <% items.forEach(item => { %>
-      <div class="item">
+      <form class="item" action="/order" method="POST">
         <ul>
           <li><strong>Name:</strong> <%= item.item_name %></li>
           <li><strong>Price:</strong> <%= item.item_price %></li>
           <li><strong>Quantity:</strong> <%= item.item_quantity %></li>
         </ul>
-        <input type="number" class="input-number" placeholder="Quantity" />
-        <button class="buy-button">Buy</button>
-      </div>
+        <input type="hidden" name="user_id" value="<%= item.user_id %>" />
+        <input type="hidden" name="item_id" value="<%= item._id %>" />
+        <input
+          type="number"
+          max="50"
+          min="0"
+          name="no_of_quantity"
+          class="input-number"
+          placeholder="Quantity"
+        />
+        <button type="submit" class="buy-button">Buy</button>
+      </form>
       <% }); %>
     </div>
   </body>

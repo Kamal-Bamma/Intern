@@ -1,0 +1,84 @@
+
+// Define Item schema and model
+const itemSchema = new mongoose.Schema({
+  item_name: String,
+  item_quantity: Number,
+});
+const itemSch = mongoose.model("itemSch", itemSchema);
+
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
+
+// Route to retrieve item details
+app.get("/item", async (req, res) => {
+  try {
+    const item = await itemSch.findOne(); // Adjust query to retrieve specific item
+    res.json(item);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// Route to handle quantity updates
+app.put("/updateQuantity", async (req, res) => {
+  const { itemId, newQuantity } = req.body;
+
+  try {
+    const item = await itemSch.findById(itemId);
+    if (!item) {
+      return res.status(404).send("Item not found");
+    }
+
+    // Ensure new quantity is within valid range (0 to item's initial quantity)
+    const updatedQuantity = Math.max(
+      0,
+      Math.min(item.item_quantity, newQuantity)
+    );
+
+    // Update item quantity
+    item.item_quantity = updatedQuantity;
+    await item.save();
+
+    res.json(item);
+    console.log(`Quantity updated. New quantity: ${item.item_quantity}`);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+
+
+// Route to buy items
+// app.post("/order", async (req, res) => {
+//   const { no_of_quantity } = req.body;
+//   const { item_id, user_id } = req.params;
+
+//   try {
+// const item = await Item.findById(item_id);
+
+// if (!item || item.item_quantity < no_of_quantity) {
+//   return res
+//     .status(400)
+//     .json({ success: false, message: "Not enough stock." });
+// }
+
+//     const broughtItem = new BoughtItem({
+//       item_id: item_id,
+//       user_id: user_id,
+//       no_of_quantity: no_of_quantity,
+//     });
+//     await broughtItem.save();
+
+//     item.item_quantity -= no_of_quantity;
+//     await item.save();
+
+//     res.json({ success: true });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// });
+
+// app.get("/", async (req, res) => {
+//   const items = await BoughtItem.find();
+//   res.render("index", { items });
+// });

@@ -4,17 +4,38 @@ const { connectMongoDb } = require("./connection");
 const Item = require("./models/Items");
 const User = require("./models/users");
 const bcrypt = require("bcrypt");
+const bodyParser = require("body-parser");
+const BoughtItem = require("./models/orderLists");
+const session = require("express-session");
 
 const app = express();
 const PORT = 8000;
 
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views")); // Ensure you have `path` required at the top of your file
+app.set("views", path.join(__dirname, "views"));
 
-// Middleware to parse JSON request bodies
+// Middleware to parse JSON request bodies and manage sessions
+app.use(
+  session({
+    secret: "sfvbah23rqefq34",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use((req, res, next) => {
+  if (req.session && req.session.user) {
+    req.user = req.session.user;
+  } else {
+    req.user = null;
+  }
+  next();
+});
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "css")));
+app.use(bodyParser.json());
 
 // MongoDB connection
 connectMongoDb("mongodb://127.0.0.1:27017/Inventory")
@@ -26,44 +47,38 @@ connectMongoDb("mongodb://127.0.0.1:27017/Inventory")
   });
 
 // Home route
-
 app.get("/", (req, res) => {
-  // res.send("Hello Programmer");
-  res.render("navbar.ejs");
-});
-
-app.get("/register", (req, res) => {
-  res.render("register.ejs");
+  res.render("register.ejs", { user: req.user });
 });
 
 app.get("/login", (req, res) => {
-  res.render("login.ejs");
+  res.render("login.ejs", { user: req.user });
 });
 
 app.get("/addItems", (req, res) => {
-  res.render("addItems.ejs");
+  res.render("addItems.ejs", { user: req.user });
 });
 
 app.get("/order", (req, res) => {
-  res.render("order.ejs");
+  res.render("order.ejs", { user: req.user });
 });
 
-// app.get("/navbar", (req, res) => {
-//   res.render("/navbar.ejs");
-// });
+app.get("/navbar", (req, res) => {
+  res.render("navbar.ejs", { user: req.user });
+});
 
-// Routers add to Display, create and login user account
+// Routers to display, create, and login user account
 app.get("/users", async (req, res) => {
   try {
     const users = await User.find();
-    res.render("users", { users });
+    res.render("users", { users, user: req.user });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
 });
 
 app.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, is_admin } = req.body;
 
   try {
     const check = await User.findOne({ email });
@@ -71,7 +86,12 @@ app.post("/register", async (req, res) => {
       return res.status(400).json("User already exists");
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = new User({ name, email, password: hashedPassword });
+      const newUser = new User({
+        name,
+        email,
+        password: hashedPassword,
+        is_admin,
+      });
       await newUser.save();
       res.redirect("/login");
     }
@@ -90,6 +110,7 @@ app.post("/login", async (req, res) => {
     } else {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
+        req.session.user = user; // Set the session user after successful login
         res.redirect("/index");
       } else {
         res.status(400).json("Incorrect password");
@@ -100,14 +121,13 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Route to display users
-app.get("/users", async (req, res) => {
-  try {
-    const users = await User.find();
-    res.render("users", { users }); // Pass users data to the users.ejs template
-  } catch (e) {
-    res.status(500).json({ message: e.message });
-  }
+app.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "failed to logout" });
+    }
+    res.redirect("/login");
+  });
 });
 
 app.get("/edit/:id", async (req, res) => {
@@ -115,9 +135,9 @@ app.get("/edit/:id", async (req, res) => {
     const user = await User.findById(req.params.id);
 
     if (!user) {
-      return res.status(404).json({ message: "User on found" });
+      return res.status(404).json({ message: "User not found" });
     }
-    res.render("edit", { user });
+    res.render("edit", { user, user: req.user });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
@@ -157,7 +177,9 @@ app.post("/delete/:id", async (req, res) => {
 app.get("/index", async (req, res) => {
   try {
     const items = await Item.find();
-    res.render("index", { items });
+    const user_id = req.user ? req.user._id : null;
+    // const item_id = req.item ? req.item._id : null;
+    res.render("index", { items, user_id, user: req.user });
   } catch (error) {
     res.status(500).send(error);
   }
@@ -166,7 +188,7 @@ app.get("/index", async (req, res) => {
 app.get("/items", async (req, res) => {
   try {
     const items = await Item.find();
-    res.render("items", { items });
+    res.render("items", { items, items: req.user });
   } catch (error) {
     res.status(500).send(error);
   }
@@ -185,6 +207,40 @@ app.post("/addItems", async (req, res) => {
       await newItem.save();
       res.redirect("/addItems");
     }
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
+
+//Get route to view all order
+app.get("/order", async (req, res) => {
+  try {
+    const orderLists = await BoughtItem.find().populate("item_id", [
+      "item_name",
+      "item_price",
+    ]);
+    res.render("index", { orderLists });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// Post route to add a new order
+app.post("/order", async (req, res) => {
+  console.log(req.body); // Log the entire request body for debugging
+  try {
+    const { user_id, item_id, no_of_quantity } = req.body;
+
+    // if (!user_id || !item_id || !no_of_quantity) {
+    //   return res.status(400).json({ message: "Missing required fields" });
+    // }
+    const orders = new BoughtItem({
+      user_id,
+      item_id,
+      no_of_quantity,
+    });
+    await orders.save();
+    res.redirect("/index");
   } catch (e) {
     res.status(500).json({ message: e.message });
   }

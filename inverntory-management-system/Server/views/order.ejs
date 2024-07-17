@@ -8,7 +8,17 @@
   <body>
     <%- include("navbar.ejs") %>
     <div>
-      <h1>My Order</h1>
+      <h1>My Order List</h1>
+      <% orderLists.forEach(orderList => { %>
+      <div>
+        <ul>
+          <li><strong>User_id:</strong> <%= orderList.user_id %></li>
+          <li><strong>Name:</strong> <%= orderList.item_id.item_name %></li>
+          <li><strong>Price:</strong> <%= orderList.item_id.item_price %></li>
+          <li><strong>Quantity:</strong> <%= orderList.no_of_quantity %></li>
+        </ul>
+      </div>
+      <% }) %>
     </div>
   </body>
 </html>

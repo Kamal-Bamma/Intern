@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  is_admin: {
+    type: Boolean,
+    required: false,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
