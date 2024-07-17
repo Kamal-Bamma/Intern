@@ -17,7 +17,8 @@
           <li><strong>Price:</strong> <%= item.item_price %></li>
           <li><strong>Quantity:</strong> <%= item.item_quantity %></li>
         </ul>
-        <input type="hidden" name="user_id" value="<%= item.user_id %>" />
+
+        <input type="hidden" name="user_id" value="<%= user_id %>" />
         <input type="hidden" name="item_id" value="<%= item._id %>" />
         <input
           type="number"

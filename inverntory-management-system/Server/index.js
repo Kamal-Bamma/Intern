@@ -69,9 +69,10 @@ app.get("/navbar", (req, res) => {
 
 // Routers to display, create, and login user account
 app.get("/users", async (req, res) => {
+  const { user_id } = req.params;
   try {
     const users = await User.find();
-    res.render("users", { users, user: req.user });
+    res.render("users", { users, user: req.user, user_id });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
@@ -215,11 +216,10 @@ app.post("/addItems", async (req, res) => {
 //Get route to view all order
 app.get("/order", async (req, res) => {
   try {
-    const orderLists = await BoughtItem.find().populate("item_id", [
-      "item_name",
-      "item_price",
-    ]);
-    res.render("index", { orderLists });
+    const orderLists = await BoughtItem.find()
+      .populate("item_id", ["item_name", "item_price"])
+      .populate("user_id", ["name", "email"]);
+    res.render("index", { orderLists, user: req.user });
   } catch (error) {
     res.status(500).send(error);
   }
@@ -231,9 +231,9 @@ app.post("/order", async (req, res) => {
   try {
     const { user_id, item_id, no_of_quantity } = req.body;
 
-    // if (!user_id || !item_id || !no_of_quantity) {
-    //   return res.status(400).json({ message: "Missing required fields" });
-    // }
+    if (!user_id || !item_id || !no_of_quantity) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
     const orders = new BoughtItem({
       user_id,
       item_id,

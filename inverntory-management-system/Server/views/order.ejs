@@ -3,22 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link rel="stylesheet" href="/path/to/your/css" />
+    <title>Orders</title>
   </head>
   <body>
-    <%- include("navbar.ejs") %>
-    <div>
-      <h1>My Order List</h1>
-      <% orderLists.forEach(orderList => { %>
-      <div>
-        <ul>
-          <li><strong>User_id:</strong> <%= orderList.user_id %></li>
-          <li><strong>Name:</strong> <%= orderList.item_id.item_name %></li>
-          <li><strong>Price:</strong> <%= orderList.item_id.item_price %></li>
-          <li><strong>Quantity:</strong> <%= orderList.no_of_quantity %></li>
-        </ul>
-      </div>
-      <% }) %>
-    </div>
+    <%- include('navbar', { user: user }) %>
+    <h1>All Orders</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>User Name</th>
+          <th>User Email</th>
+          <th>Item Name</th>
+          <th>Item Price</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% orderLists.forEach(order => { %>
+        <tr>
+          <td><%= order._id %></td>
+          <td><%= order.user_id.name %></td>
+          <td><%= order.user_id.email %></td>
+          <td><%= order.item_id.item_name %></td>
+          <td><%= order.item_id.item_price %></td>
+          <td><%= order.no_of_quantity %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
   </body>
 </html>
