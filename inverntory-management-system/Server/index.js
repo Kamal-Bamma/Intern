@@ -59,8 +59,17 @@ app.get("/addItems", (req, res) => {
   res.render("addItems.ejs", { user: req.user });
 });
 
-app.get("/order", (req, res) => {
-  res.render("order.ejs", { user: req.user });
+app.get("/order", async (req, res) => {
+  try {
+    console.log("first");
+    const ordersList = await BoughtItem.find()
+      .populate("item_id")
+      .populate("user_id");
+    console.log({ ordersList });
+    res.render("order.ejs", { ordersList, user: req.user });
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 app.get("/navbar", (req, res) => {
@@ -214,16 +223,9 @@ app.post("/addItems", async (req, res) => {
 });
 
 //Get route to view all order
-app.get("/order", async (req, res) => {
-  try {
-    const orderLists = await BoughtItem.find()
-      .populate("item_id", ["item_name", "item_price"])
-      .populate("user_id", ["name", "email"]);
-    res.render("index", { orderLists, user: req.user });
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
+// app.get("/order", async (req, res) => {
+
+// });
 
 // Post route to add a new order
 app.post("/order", async (req, res) => {

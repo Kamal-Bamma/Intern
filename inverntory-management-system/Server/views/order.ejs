@@ -3,8 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/path/to/your/css" />
     <title>Orders</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px; /* Optional: Adjust as needed */
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd; /* Optional: Adds bottom border to cells */
+      }
+      th {
+        background-color: #f2f2f2; /* Optional: Background color for header cells */
+        color: #333; /* Optional: Text color for header cells */
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9; /* Optional: Alternate row background color */
+      }
+    </style>
   </head>
   <body>
     <%- include('navbar', { user: user }) %>
@@ -21,7 +40,7 @@
         </tr>
       </thead>
       <tbody>
-        <% orderLists.forEach(order => { %>
+        <% ordersList?.forEach(order => { %>
         <tr>
           <td><%= order._id %></td>
           <td><%= order.user_id.name %></td>
