@@ -5,52 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Orders</title>
     <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      h1 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+      }
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 20px; /* Optional: Adjust as needed */
+        margin-bottom: 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
       th,
       td {
-        padding: 10px;
+        padding: 12px 15px;
         text-align: left;
-        border-bottom: 1px solid #ddd; /* Optional: Adds bottom border to cells */
+        border-bottom: 1px solid #ddd;
       }
       th {
-        background-color: #f2f2f2; /* Optional: Background color for header cells */
-        color: #333; /* Optional: Text color for header cells */
+        background-color: #f8f8f8;
+        font-weight: 600;
       }
       tr:nth-child(even) {
-        background-color: #f9f9f9; /* Optional: Alternate row background color */
+        background-color: #f9f9f9;
+      }
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+      td[colspan="3"] {
+        text-align: center;
+        font-style: italic;
+        color: #999;
+      }
+      .btn a {
+        display: inline-block;
+        margin: 2px;
+        padding: 5px 10px;
+        font-size: 16px;
+        font-weight: 700;
+        text-decoration: none;
+        color: #111;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+      }
+      .btn a:hover {
+        background-color: #fff;
       }
     </style>
   </head>
   <body>
     <%- include('navbar', { user: user }) %>
-    <h1>All Orders</h1>
+    <h1>Order List for <%= user.name %></h1>
     <table>
       <thead>
         <tr>
-          <th>Order ID</th>
-          <th>User Name</th>
-          <th>User Email</th>
-          <th>Item Name</th>
-          <th>Item Price</th>
+          <th>Item</th>
           <th>Quantity</th>
+          <th>Ordered By</th>
         </tr>
       </thead>
       <tbody>
-        <% ordersList?.forEach(order => { %>
+        <% if (orderLists.length > 0) { %> <% orderLists.forEach(order => { %>
         <tr>
-          <td><%= order._id %></td>
-          <td><%= order.user_id.name %></td>
-          <td><%= order.user_id.email %></td>
           <td><%= order.item_id.item_name %></td>
-          <td><%= order.item_id.item_price %></td>
           <td><%= order.no_of_quantity %></td>
+          <td><%= order.user_id.name %></td>
         </tr>
-        <% }) %>
+        <% }); %> <% } else { %>
+        <tr>
+          <td colspan="3">No orders found</td>
+        </tr>
+        <% } %>
       </tbody>
     </table>
+    <button class="btn">
+      <a href="/index">Back to Items</a>
+    </button>
   </body>
 </html>

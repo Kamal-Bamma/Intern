@@ -59,19 +59,6 @@ app.get("/addItems", (req, res) => {
   res.render("addItems.ejs", { user: req.user });
 });
 
-app.get("/order", async (req, res) => {
-  try {
-    console.log("first");
-    const ordersList = await BoughtItem.find()
-      .populate("item_id")
-      .populate("user_id");
-    console.log({ ordersList });
-    res.render("order.ejs", { ordersList, user: req.user });
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
 app.get("/navbar", (req, res) => {
   res.render("navbar.ejs", { user: req.user });
 });
@@ -222,16 +209,42 @@ app.post("/addItems", async (req, res) => {
   }
 });
 
-//Get route to view all order
-// app.get("/order", async (req, res) => {
+// Middleware to ensure user is logged in
+const isAuthenticated = (req, res, next) => {
+  if (!req.user) {
+    return res.redirect("/login");
+  }
+  next();
+};
 
-// });
+// Get route to view all orders for logged-in user
+app.get("/order", isAuthenticated, async (req, res) => {
+  try {
+    // console.log("Logged-in user ID:", req.user._id);
+    const ordersList = await BoughtItem.find({ user_id: req.user._id })
+      .populate("item_id")
+      .populate("user_id");
+    // console.log("Orders List:", ordersList);
+    res.render("order.ejs", { orderLists: ordersList, user: req.user });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 // Post route to add a new order
-app.post("/order", async (req, res) => {
-  console.log(req.body); // Log the entire request body for debugging
+app.post("/order", isAuthenticated, async (req, res) => {
+  // console.log(req.body); // Log the entire request body for debugging
   try {
-    const { user_id, item_id, no_of_quantity } = req.body;
+    const { item_id, no_of_quantity } = req.body;
+    const user_id = req.user._id;
+
+    const item = await Item.findById(item_id);
+
+    if (!item || item.item_quantity < no_of_quantity) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Not enough stock." });
+    }
 
     if (!user_id || !item_id || !no_of_quantity) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -242,6 +255,10 @@ app.post("/order", async (req, res) => {
       no_of_quantity,
     });
     await orders.save();
+
+    item.item_quantity -= no_of_quantity;
+    await item.save();
+
     res.redirect("/index");
   } catch (e) {
     res.status(500).json({ message: e.message });
