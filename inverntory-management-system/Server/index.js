@@ -63,6 +63,10 @@ app.get("/navbar", (req, res) => {
   res.render("navbar.ejs", { user: req.user });
 });
 
+app.get("/sidebar", (req, res) => {
+  res.render("sidebar.ejs");
+});
+
 // Routers to display, create, and login user account
 app.get("/users", async (req, res) => {
   const { user_id } = req.params;
@@ -261,6 +265,21 @@ const isAuthenticated = (req, res, next) => {
   }
   next();
 };
+
+// Get route to view all orders
+
+app.get("/orders", async (req, res) => {
+  try {
+    console.log("first");
+    const ordersList = await BoughtItem.find()
+      .populate("item_id")
+      .populate("user_id");
+    console.log({ ordersList });
+    res.render("orders.ejs", { ordersList, user: req.user });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
 // Get route to view all orders for logged-in user
 app.get("/order", isAuthenticated, async (req, res) => {

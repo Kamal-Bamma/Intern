@@ -11,6 +11,8 @@
         padding: 20px;
       }
       form {
+        width: 70%;
+        margin: 5% 0 0 10%;
         background-color: #fff;
         padding: 20px;
         border-radius: 5px;
@@ -41,6 +43,7 @@
     </style>
   </head>
   <body>
+    <%- include("sidebar") %>
     <h1>Edit User</h1>
     <form action="/edit/<%= user._id %>" method="POST">
       <label for="name">Full Name</label>
