@@ -1,78 +1,99 @@
+<!-- views/index.ejs -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Item</title>
+    <title>Inventory</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
+        font-family: "Arial", sans-serif;
+        background-color: #f0f2f5;
+        color: #333;
         margin: 0;
-        padding: 0;
-      }
-
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
         padding: 20px;
       }
 
       h1 {
         text-align: center;
-        color: #333;
-      }
-
-      .item {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 15px;
+        color: #4a90e2;
         margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 2.5em;
       }
 
-      .item ul {
+      a {
+        display: inline-block;
+        background-color: #4a90e2;
+        color: #fff;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      a:hover {
+        background-color: #357ab8;
+      }
+
+      ul {
         list-style-type: none;
         padding: 0;
       }
 
-      .item ul li {
-        margin: 5px 0;
+      li {
+        background-color: #fff;
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
-      .input-number {
-        width: 100px;
-        padding: 5px;
+      li:nth-child(even) {
+        background-color: #e6f7ff;
+      }
+
+      li a {
         margin-right: 10px;
       }
 
-      .buy-button {
-        background-color: #28a745;
+      form {
+        display: inline;
+      }
+
+      button {
+        background-color: #e74c3c;
         color: #fff;
         border: none;
         padding: 10px 15px;
-        border-radius: 4px;
+        border-radius: 5px;
         cursor: pointer;
+        transition: background-color 0.3s;
       }
 
-      .buy-button:hover {
-        background-color: #218838;
+      button:hover {
+        background-color: #c0392b;
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1>Item List</h1>
+    <h1>Inventory</h1>
+    <a href="addItems">Add New Item</a>
+    <ul>
       <% items.forEach(item => { %>
-      <div class="item">
-        <ul>
-          <li><strong>Name:</strong> <%= item.item_name %></li>
-          <li><strong>Price:</strong> <%= item.item_price %></li>
-          <li><strong>Quantity:</strong> <%= item.item_quantity %></li>
-        </ul>
-      </div>
+      <li>
+        <span><b>Product Name: </b><%= item.item_name %></span
+        ><span><b> Product Price: </b><%= item.item_price %></span
+        ><span><b>Product Quantity: </b><%= item.item_quantity %></span>
+
+        <a href="editItem/<%= item._id %>">Edit</a>
+        <form action="deleteItems/<%= item._id %>" method="POST">
+          <button type="submit">Delete</button>
+        </form>
+      </li>
       <% }); %>
-    </div>
+    </ul>
   </body>
 </html>

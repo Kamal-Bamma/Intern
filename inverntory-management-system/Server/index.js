@@ -134,7 +134,7 @@ app.get("/edit/:id", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.render("edit", { user, user: req.user });
+    res.render("edit", { user });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
@@ -170,25 +170,19 @@ app.post("/delete/:id", async (req, res) => {
   }
 });
 
-// GET route to fetch items
-app.get("/index", async (req, res) => {
+// GET - View all items
+app.get("/items", async (req, res) => {
   try {
     const items = await Item.find();
-    const user_id = req.user ? req.user._id : null;
-    // const item_id = req.item ? req.item._id : null;
-    res.render("index", { items, user_id, user: req.user });
+    res.render("items", { items });
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
-app.get("/items", async (req, res) => {
-  try {
-    const items = await Item.find();
-    res.render("items", { items, items: req.user });
-  } catch (error) {
-    res.status(500).send(error);
-  }
+// GET - Render add item form
+app.get("/addItems", (req, res) => {
+  res.render("addItems");
 });
 
 // POST route to add a new item
@@ -198,14 +192,65 @@ app.post("/addItems", async (req, res) => {
   try {
     const check = await Item.findOne({ item_name });
     if (check) {
+      // check.item_quantity += parseInt(item_quantity);
       return res.status(400).json("Item is already added");
     } else {
       const newItem = new Item({ item_name, item_price, item_quantity });
       await newItem.save();
-      res.redirect("/addItems");
+      res.redirect("/items");
     }
   } catch (e) {
     res.status(500).json({ message: e.message });
+  }
+});
+
+// GET - Render edit item form
+app.get("/editItem/:id", async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.id);
+    res.render("editItem", { item });
+  } catch (err) {
+    res.status(404).json({ message: "Item not found" });
+  }
+});
+
+// POST - Update item
+app.post("/editItem/:id", async (req, res) => {
+  const { item_name, item_price, item_quantity } = req.body;
+  try {
+    const item = await Item.findById(req.params.id);
+    if (item) {
+      item.item_name = item_name;
+      item.item_price = item_price;
+      item.item_quantity = item_quantity;
+      await item.save();
+      res.redirect("/items");
+    } else {
+      res.status(404).json({ message: "Item not found" });
+    }
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// POST - Delete item
+app.post("/deleteItems/:id", async (req, res) => {
+  try {
+    await Item.findByIdAndDelete(req.params.id);
+    res.redirect("/items");
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET route to fetch items
+app.get("/index", async (req, res) => {
+  try {
+    const items = await Item.find();
+    const user_id = req.user ? req.user._id : null;
+    res.render("index", { items, user_id, user: req.user });
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 
@@ -260,6 +305,25 @@ app.post("/order", isAuthenticated, async (req, res) => {
     await item.save();
 
     res.redirect("/index");
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
+
+// Route to handle delete order request
+app.post("/deleteOrder/:id", isAuthenticated, async (req, res) => {
+  try {
+    const order = await BoughtItem.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    if (order.user_id.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this order" });
+    }
+    await BoughtItem.findByIdAndDelete(req.params.id);
+    res.redirect("/order");
   } catch (e) {
     res.status(500).json({ message: e.message });
   }

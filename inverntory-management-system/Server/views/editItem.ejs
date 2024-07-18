@@ -1,0 +1,40 @@
+<!-- views/edit.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Item</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <h1>Edit Item</h1>
+    <form action="editItem/<%= item._id %>" method="POST">
+      <label for="item_name">Item Name</label>
+      <input
+        type="text"
+        id="itemName"
+        name="item_name"
+        value="<%= item.item_name %>"
+        required
+      />
+      <label for="item_price">Item Price</label>
+      <input
+        type="number"
+        id="itemPrice"
+        name="item_price"
+        value="<%= item.item_price %>"
+        required
+      />
+      <label for="item_quantity">Item Quantity</label>
+      <input
+        type="number"
+        id="itemQuantity"
+        name="item_quantity"
+        value="<%= item.item_quantity %>"
+        required
+      />
+      <button type="submit">Save Changes</button>
+    </form>
+  </body>
+</html>

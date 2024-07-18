@@ -40,7 +40,7 @@
       tr:hover {
         background-color: #f1f1f1;
       }
-      td[colspan="3"] {
+      td[colspan="4"] {
         text-align: center;
         font-style: italic;
         color: #999;
@@ -56,9 +56,6 @@
         border-radius: 4px;
         transition: background-color 0.3s ease;
       }
-      .btn a:hover {
-        background-color: #fff;
-      }
     </style>
   </head>
   <body>
@@ -70,6 +67,7 @@
           <th>Item</th>
           <th>Quantity</th>
           <th>Ordered By</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -78,10 +76,15 @@
           <td><%= order.item_id.item_name %></td>
           <td><%= order.no_of_quantity %></td>
           <td><%= order.user_id.name %></td>
+          <td>
+            <form action="/deleteOrder/<%= order._id %>" method="POST">
+              <button type="submit">Delete Order</button>
+            </form>
+          </td>
         </tr>
         <% }); %> <% } else { %>
         <tr>
-          <td colspan="3">No orders found</td>
+          <td colspan="4">No orders found</td>
         </tr>
         <% } %>
       </tbody>
