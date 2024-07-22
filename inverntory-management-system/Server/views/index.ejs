@@ -9,7 +9,7 @@
   <body>
     <%- include("navbar",{user:user}) -%>
     <div class="container">
-      <h1>Item List</h1>
+      <h1>List of Item</h1>
       <% items.forEach(item => { %>
       <form class="item" action="/order" method="POST">
         <ul>

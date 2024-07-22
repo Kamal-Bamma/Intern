@@ -82,3 +82,38 @@ app.put("/updateQuantity", async (req, res) => {
 //   const items = await BoughtItem.find();
 //   res.render("index", { items });
 // });
+
+
+
+
+ <h1>All Orders</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>User Name</th>
+          <th>User Email</th>
+          <th>Item Name</th>
+          <th>Item Price</th>
+          <th>Quantity</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% ordersList?.forEach(order => { %>
+        <tr>
+          <td><%= order._id %></td>
+          <td><%= order.user_id.name %></td>
+          <td><%= order.user_id.email %></td>
+          <td><%= order.item_id.item_name %></td>
+          <td><%= order.item_id.item_price %></td>
+          <td><%= order.no_of_quantity %></td>
+          <td>
+            <form action="/deleteOrders/<%= order._id %>" method="POST">
+              <button type="submit">Delete Order</button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>

@@ -79,7 +79,7 @@ app.get("/users", async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const { name, email, password, is_admin } = req.body;
+  const { name, email, password, roles } = req.body;
 
   try {
     const check = await User.findOne({ email });
@@ -91,7 +91,7 @@ app.post("/register", async (req, res) => {
         name,
         email,
         password: hashedPassword,
-        is_admin,
+        roles,
       });
       await newUser.save();
       res.redirect("/login");
@@ -100,6 +100,14 @@ app.post("/register", async (req, res) => {
     return res.status(400).json({ message: e.message });
   }
 });
+
+// Middleware for admin login
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.roles === "admin") {
+    return res.redirect("/items");
+  }
+  next();
+};
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -112,7 +120,8 @@ app.post("/login", async (req, res) => {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
         req.session.user = user; // Set the session user after successful login
-        res.redirect("/index");
+        req.user = user; // Set req.user
+        return isAdmin(req, res, () => res.redirect("/index")); // Call isAdmin middleware
       } else {
         res.status(400).json("Incorrect password");
       }
@@ -196,7 +205,6 @@ app.post("/addItems", async (req, res) => {
   try {
     const check = await Item.findOne({ item_name });
     if (check) {
-      // check.item_quantity += parseInt(item_quantity);
       return res.status(400).json("Item is already added");
     } else {
       const newItem = new Item({ item_name, item_price, item_quantity });
@@ -267,14 +275,11 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // Get route to view all orders
-
 app.get("/orders", async (req, res) => {
   try {
-    console.log("first");
     const ordersList = await BoughtItem.find()
       .populate("item_id")
       .populate("user_id");
-    console.log({ ordersList });
     res.render("orders.ejs", { ordersList, user: req.user });
   } catch (error) {
     res.status(500).send(error);
@@ -284,11 +289,9 @@ app.get("/orders", async (req, res) => {
 // Get route to view all orders for logged-in user
 app.get("/order", isAuthenticated, async (req, res) => {
   try {
-    // console.log("Logged-in user ID:", req.user._id);
     const ordersList = await BoughtItem.find({ user_id: req.user._id })
       .populate("item_id")
       .populate("user_id");
-    // console.log("Orders List:", ordersList);
     res.render("order.ejs", { orderLists: ordersList, user: req.user });
   } catch (error) {
     res.status(500).send(error);
@@ -297,7 +300,6 @@ app.get("/order", isAuthenticated, async (req, res) => {
 
 // Post route to add a new order
 app.post("/order", isAuthenticated, async (req, res) => {
-  // console.log(req.body); // Log the entire request body for debugging
   try {
     const { item_id, no_of_quantity } = req.body;
     const user_id = req.user._id;
@@ -329,7 +331,7 @@ app.post("/order", isAuthenticated, async (req, res) => {
   }
 });
 
-// Route to handle delete order request
+// Route to handle delete order request with respect to userId
 app.post("/deleteOrder/:id", isAuthenticated, async (req, res) => {
   try {
     const order = await BoughtItem.findById(req.params.id);
@@ -340,6 +342,20 @@ app.post("/deleteOrder/:id", isAuthenticated, async (req, res) => {
       return res
         .status(403)
         .json({ message: "You are not authorized to delete this order" });
+    }
+    await BoughtItem.findByIdAndDelete(req.params.id);
+    res.redirect("/order");
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
+
+// Route to handle delete order request
+app.post("/deleteOrders/:id", isAuthenticated, async (req, res) => {
+  try {
+    const order = await BoughtItem.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
     }
     await BoughtItem.findByIdAndDelete(req.params.id);
     res.redirect("/order");
