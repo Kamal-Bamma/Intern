@@ -9,6 +9,11 @@
   </head>
   <body>
     <%- include("sidebar") %>
+    <div>
+      <% if (messages && messages.msg) { %>
+      <div class="flash-msg"><%= messages.msg[0] %></div>
+      <% } %>
+    </div>
     <h1>Edit Item</h1>
     <form action="/editItem/<%= item._id %>" method="POST">
       <label for="item_name">Item Name</label>

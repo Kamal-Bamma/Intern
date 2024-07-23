@@ -59,3 +59,13 @@ button {
 button:hover {
   background-color: #357ab8;
 }
+
+.flash-msg {
+  background-color: lightblue;
+  width: 100%;
+  color: blue;
+  padding: 10px;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}

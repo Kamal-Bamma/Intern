@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Item Form</title>
-
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -53,21 +52,32 @@
       button:hover {
         background-color: #45a049;
       }
+      .flash-msg {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        margin-left: 20%;
+      }
     </style>
   </head>
   <body>
-    <%- include("sidebar") %>
+    <%- include("sidebar") %> <% if (messages && messages.msg) { %>
+    <div class="flash-msg"><%= messages.msg[0] %></div>
+    <% } %>
     <div class="container">
       <h1>List of Items</h1>
       <form action="/addItems" method="post">
         <label for="itemsName">Name:</label>
-        <input type="text" id="itemsName" name="item_name" />
+        <input type="text" id="itemsName" name="item_name" required />
 
         <label for="itemsPrice">Price:</label>
-        <input type="text" id="itemsPrice" name="item_price" />
+        <input type="text" id="itemsPrice" name="item_price" required />
 
         <label for="itemQuantity">Quantity:</label>
-        <input type="number" id="itemQuantity" name="item_quantity" />
+        <input type="number" id="itemQuantity" name="item_quantity" required />
 
         <button type="submit">Add</button>
       </form>
