@@ -11,7 +11,7 @@ const { isAuthenticated } = require("../middleware/authMiddleware");
 const router = express.Router();
 
 router.get("/orders", displayAllUserOrder);
-router.get("/order", displayUserOwnOrder);
+router.get("/order", isAuthenticated, displayUserOwnOrder);
 router.post("/order", isAuthenticated, addNewOrder);
 router.post("/deleteOrder/:id", isAuthenticated, deleteOwnOrder);
 router.post("/deleteOrders/:id", isAuthenticated, deleteAllUserOrders);

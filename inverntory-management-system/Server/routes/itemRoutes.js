@@ -12,8 +12,8 @@ const Item = require("../models/Items");
 
 const router = express.Router();
 
-router.get("/items", displayItems);
-router.get("/addItems", displayAddItem);
+router.get("/items", isAuthenticated, displayItems);
+router.get("/addItems", isAuthenticated, displayAddItem);
 router.post("/addItems", isAuthenticated, addItem);
 router.get("/editItem/:id", isAuthenticated, async (req, res) => {
   try {
@@ -25,6 +25,6 @@ router.get("/editItem/:id", isAuthenticated, async (req, res) => {
 });
 router.post("/editItem/:id", isAuthenticated, editItem);
 router.post("/deleteItems/:id", isAuthenticated, deleteItem);
-router.get("/index", displayIndex);
+router.get("/index", isAuthenticated, displayIndex);
 
 module.exports = router;
