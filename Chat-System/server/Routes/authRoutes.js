@@ -1,18 +1,18 @@
 const express = require("express");
 const {
-  handleDisplayRegister,
-  handleDisplayLogin,
   handleRegisterUser,
   handleLoginUser,
   handleLogoutUser,
+  handleDisplayUserRegister,
+  handleDisplayUserLogin,
 } = require("../Controller/authController");
 
 const router = express.Router();
 
-router.get("/register", handleDisplayRegister);
-router.get("/login", handleDisplayLogin);
-router.post("/register", handleRegisterUser);
-router.post("/login", handleLoginUser);
+router.get("/userRegister", handleDisplayUserRegister);
+router.get("/userlogin", handleDisplayUserLogin);
+router.post("/userRegister", handleRegisterUser);
+router.post("/userLogin", handleLoginUser);
 router.get("/logout", handleLogoutUser);
 
 module.exports = router;

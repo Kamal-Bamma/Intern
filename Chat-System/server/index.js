@@ -6,6 +6,7 @@ const { connectMongoDb } = require("./Connection");
 
 // Routes importing
 const authRoutes = require("./Routes/authRoutes");
+const vendorRoutes = require("./Routes/vendorRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 8001;
@@ -22,5 +23,6 @@ app.get("/", (req, res) => {
 });
 
 app.use(authRoutes);
+app.use(vendorRoutes);
 
 app.listen(PORT, () => console.log(`Server started at port: ${PORT}`));

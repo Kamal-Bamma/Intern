@@ -1,41 +1,41 @@
-const User = require("../Models/userModels");
+const Vendor = require("../Models/vendorModels");
 const bcrypt = require("bcrypt");
 
-const handleDisplayUserRegister = async (req, res) => {
-  res.render("userRegister.ejs");
+const handleDisplayVendorRegister = async (req, res) => {
+  res.render("vendorRegister.ejs");
 };
 
-const handleDisplayUserLogin = async (req, res) => {
-  res.render("userLogin.ejs");
+const handleDisplayVendorLogin = async (req, res) => {
+  res.render("vendorLogin.ejs");
 };
 
-const handleRegisterUser = async (req, res) => {
+const handleRegisterVendor = async (req, res) => {
   const { name, email, password, roles } = req.body;
 
   try {
-    const check = await User.findOne({ email });
+    const check = await Vendor.findOne({ email });
     if (check) {
       return res.status(400).json("User already exists");
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = new User({
+      const newVendor = new Vendor({
         name,
         email,
         password: hashedPassword,
         roles,
       });
-      await newUser.save();
-      res.redirect("/login");
+      await newVendor.save();
+      res.redirect("/venorLogin");
     }
   } catch (e) {
     return res.status(400).json({ message: e.message });
   }
 };
 
-const handleLoginUser = async (req, res) => {
+const handleLoginVendor = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await Vendor.findOne({ email });
 
     if (!user) {
       return res.status(400).json({ message: "User doesn't exist" });
@@ -53,7 +53,7 @@ const handleLoginUser = async (req, res) => {
   }
 };
 
-const handleLogoutUser = (req, res) => {
+const handleLogoutVendor = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).json({ message: "Failed to logout" });
@@ -63,9 +63,9 @@ const handleLogoutUser = (req, res) => {
 };
 
 module.exports = {
-  handleDisplayUserLogin,
-  handleDisplayUserRegister,
-  handleRegisterUser,
-  handleLoginUser,
-  handleLogoutUser,
+  handleDisplayVendorRegister,
+  handleDisplayVendorLogin,
+  handleRegisterVendor,
+  handleLoginVendor,
+  handleLogoutVendor,
 };
