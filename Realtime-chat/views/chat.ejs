@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="chat-box">
+      <div class="message sent">
+        <div class="message-content">
+          <p><strong>You:</strong> Hi there!</p>
+        </div>
+      </div>
+      <div class="message received">
+        <div class="message-content">
+          <p><strong>Friend:</strong> Hello! How are you?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <form id="chat-form">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            id="message"
+            name="content"
+            placeholder="Type a message"
+          />
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="submit">Send</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      //   document
+      //     .getElementById("chat-form")
+      //     .addEventListener("submit", function (e) {
+      //       e.preventDefault();
+      //       const messageInput = document.getElementById("message");
+      //       const message = messageInput.value;
+      //       if (message.trim() === "") return;
+
+      //       // For demonstration purposes, appending message to the chat box
+      //       const chatBox = document.querySelector(".chat-box");
+      //       const sentMessage = document.createElement("div");
+      //       sentMessage.className = "message sent";
+      //       sentMessage.innerHTML = `<div class="message-content"><p><strong>You:</strong> ${message}</p></div>`;
+      //       chatBox.appendChild(sentMessage);
+
+      //       // Clear the input
+      //       messageInput.value = "";
+      //     });
+    </script>
+  </body>
+</html>

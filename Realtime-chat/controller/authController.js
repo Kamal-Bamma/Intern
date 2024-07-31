@@ -1,12 +1,12 @@
 const User = require("../models/Users");
 const bcrypt = require("bcrypt");
 
-const handleDisplayUserRegister = async (req, res) => {
-  res.render("userRegister.ejs");
+const handleDisplayUserRegister = (req, res) => {
+  res.render("register.ejs");
 };
 
-const handleDisplayUserLogin = async (req, res) => {
-  res.render("userLogin.ejs");
+const handleDisplayUserLogin = (req, res) => {
+  res.render("login.ejs");
 };
 
 const handleRegisterUser = async (req, res) => {
@@ -32,23 +32,24 @@ const handleRegisterUser = async (req, res) => {
 };
 
 const handleLoginUser = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const { email, password } = req.body;
     const user = await User.findOne({ email });
-
     if (!user) {
-      return res.status(400).json({ message: "User doesn't exist" });
+      res.status(400).json("User doesn't exist");
+    } else {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (isMatch) {
+        req.session.user = user;
+        req.user = user;
+        return res.redirect("/index");
+      } else {
+        res.status(400).json("Incorrect password");
+      }
     }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ message: "Incorrect password" });
-    }
-
-    return res.status(200).json({ message: "Login successful", user });
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
   }
 };
 
