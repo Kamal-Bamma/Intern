@@ -14,8 +14,13 @@
     <h1 class="head">Vendors</h1>
     <div class="user-list">
       <% users.forEach(user => { %>
-      <div class="user"><%= user.name %></div>
-      <button class="btn" data-user-id="<%= user._id %>">chat now</button>
+      <div class="user">
+        <%= user.name %>
+        <button class="btn" name="receiverId" data-user-id="<%= user._id %>">
+          chat now
+        </button>
+      </div>
+
       <% }); %>
     </div>
 
@@ -45,18 +50,20 @@
       document.addEventListener("DOMContentLoaded", function () {
         const container = document.getElementById("container");
         const chatButtons = document.querySelectorAll(".btn");
+        const receiverIdInput = document.querySelector(
+          'input[name="receiverId"]'
+        );
         // Hide the container initially
         container.style.display = "none";
 
         chatButtons.forEach((button) => {
-          button.addEventListener("click", function () {
+          button.addEventListener("click", function (event) {
             // Show the container when a chat button is clicked
             container.style.display = "block";
+            // Set the userId in the hidden input field
+            const userId = this.getAttribute("data-user-id");
+            receiverIdInput.value = userId;
           });
-
-          // Set the userId in the hidden input field
-          const userId = button.getAttribute("data-user-id");
-          document.querySelector('input[name="receiverId"]').value = userId;
         });
 
         const messageForm = document.getElementById("messageForm");
