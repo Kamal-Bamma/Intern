@@ -3,27 +3,74 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat</title>
     <link rel="stylesheet" href="/styles.css" />
+    <title>Chat</title>
   </head>
   <body>
-    <div class="chat-container">
-      <div class="message sender">
-        <div class="time">10:51</div>
-        <div class="text">How you doing ?</div>
-        <div class="name">Joe</div>
-      </div>
+    <%- include("navbar",{user:user}) %> <%- include("userView") %>
+    <div class="Container">
+      <div class="chat-container">
+        <% messages.forEach(message => { %>
+        <div
+          class="message <%= message.sender._id.toString() === user._id.toString() ? 'sender' : 'receiver' %>"
+        >
+          <div class="time">
+            <%= new Date(message.timestamp).toLocaleTimeString() %>
+          </div>
+          <div class="text"><%= message.content %></div>
+          <div class="name">
+            <%= message.sender._id.toString() === user._id.toString() ?
+            message.sender.name : message.receiver.name %>
+          </div>
+        </div>
+        <% }) %>
 
-      <div class="message receiver">
-        <div class="time">10:51</div>
-        <div class="text">Don't Joey, 😑</div>
-        <div class="name">Chandler</div>
-      </div>
-
-      <div class="input-container">
-        <input type="text" name="content" placeholder="Enter a value..." />
-        <button>Send</button>
+        <form id="messageForm" class="input-container">
+          <input
+            type="text"
+            name="content"
+            id="content"
+            placeholder="Enter a value..."
+            required
+          />
+          <input type="hidden" name="receiver" id="receiver" value" />
+          <button type="submit">Send</button>
+        </form>
       </div>
     </div>
+
+    <script>
+      document
+        .getElementById("messageForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const content = document.getElementById("content").value;
+          const receiver = document.getElementById("receiver").value;
+          const token = localStorage.getItem("jwtToken"); // Retrieve JWT token from localStorage
+
+          try {
+            const response = await fetch("/index", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ content, receiver }),
+            });
+
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            const data = await response.json();
+            alert("Message sent successfully");
+            // Optionally, you could also append the new message to the chat container dynamically here
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Error sending message");
+          }
+        });
+    </script>
   </body>
 </html>

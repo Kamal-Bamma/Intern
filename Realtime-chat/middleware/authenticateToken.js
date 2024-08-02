@@ -1,16 +1,40 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/Users");
+
+// const generateAuthToken = async (user) => {
+//   const token = jwt.sign(
+//     { _id: user._id, email: user.email },
+//     process.env.jwt_secret,
+//     {
+//       expiresIn: "7d", // Token expiration time (optional)
+//     }
+//   );
+
+//   user.tokens = user.tokens.concat({ token });
+//   await User.save();
+
+//   return token;
+// };
 
 const authenticateToken = (req, res, next) => {
-  const token = req.header("Authorization")?.split(" ")[1];
-  if (!token) return res.status(401).send("Access Denied");
-
+  // Example of token-based authentication middleware
+  const token = req.header("Authorization").replace("Bearer ", "");
   try {
-    const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-    req.user = verified;
+    const decoded = jwt.verify(token, process.env.jwt_secret);
+    req.user = decoded; // Attach user data to req
     next();
-  } catch (err) {
-    res.status(400).send("Invalid Token");
+  } catch (e) {
+    res.status(401).send({ error: "Please authenticate." });
   }
 };
 
-module.exports = authenticateToken;
+const authenticate = (req, res, next) => {
+  if (req.session && req.session.user) {
+    req.user = req.session.user;
+    next();
+  } else {
+    res.redirect("/login"); // Redirect to login if not authenticated
+  }
+};
+
+module.exports = { authenticateToken, authenticate };

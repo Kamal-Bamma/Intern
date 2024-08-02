@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/navbar.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <ul>
+        <li><a class="active" href="/index">Home</a></li>
+      </ul>
+      <div class="navbar-right">
+        <% if (user) { %>
+        <span class="name">Hi, <%= user.name %>!</span>
+        <button class="logout">
+          <a href="/logout">Logout</a>
+        </button>
+        <% } else { %>
+        <button class="login">
+          <a href="/login"> Login</a>
+        </button>
+        <% } %>
+      </div>
+    </nav>
+  </body>
+</html>

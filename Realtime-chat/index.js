@@ -35,18 +35,24 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/chat", (req, res) => {
-  res.render("chat"); // This will use 'layout.ejs' as the layout
-});
-
 app.get("/", (req, res) => {
   res.send("Hello User !");
+});
+
+app.get("/view", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.render("userView", { users: users });
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 // Existing imports and setup
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const messageRoutes = require("./routes/messages");
+const User = require("./models/Users");
 
 app.use(authRoutes);
 app.use(userRoutes);
