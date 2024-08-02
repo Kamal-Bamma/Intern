@@ -1,0 +1,166 @@
+<div class="Container">
+      <div class="chat-container" id="chat-container">
+        <% messages.forEach(message => { %>
+        <div
+          class="message <%= message.sender._id.toString() === user._id.toString() ? 'sender' : 'receiver' %>"
+        >
+          <div class="time">
+            <%= new Date(message.timestamp).toLocaleTimeString() %>
+          </div>
+          <div class="text"><%= message.content %></div>
+          <div class="name">
+            <%= message.sender._id.toString() === user._id.toString() ?
+            message.sender.name : message.receiver.name %>
+          </div>
+        </div>
+        <% }) %>
+
+        <form id="messageForm" class="input-container">
+          <input
+            type="text"
+            name="content"
+            id="content"
+            placeholder="Enter a value..."
+            required
+          />
+          <input type="hidden" name="receiver" id="receiver" />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+      -->
+    </div>
+
+    <script>
+      document.querySelectorAll(".user").forEach((userElement) => {
+        userElement.addEventListener("click", async () => {
+          const userId = userElement.dataset.userId;
+          const response = await fetch(`/messages/${userId}`);
+          const messages = await response.json();
+
+          const chatContainer = document.getElementById("chat-container");
+          chatContainer.innerHTML = ""; // Clear previous messages
+
+          messages.forEach((message) => {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message");
+            messageElement.classList.add(
+              message.sender._id === "<%= user._id %>" ? "sender" : "receiver"
+            );
+
+            const timeElement = document.createElement("div");
+            timeElement.classList.add("time");
+            timeElement.innerText = new Date(
+              message.timestamp
+            ).toLocaleTimeString();
+
+            const textElement = document.createElement("div");
+            textElement.classList.add("text");
+            textElement.innerText = message.content;
+
+            const nameElement = document.createElement("div");
+            nameElement.classList.add("name");
+            nameElement.innerText =
+              message.sender._id === "<%= user._id %>"
+                ? message.sender.name
+                : message.receiver.name;
+
+            messageElement.appendChild(timeElement);
+            messageElement.appendChild(textElement);
+            messageElement.appendChild(nameElement);
+
+            chatContainer.appendChild(messageElement);
+          });
+
+          document.getElementById("receiver").value = userId;
+        });
+      });
+
+      document.querySelectorAll(".user").forEach((userElement) => {
+        userElement.addEventListener("click", async () => {
+          const userId = userElement.dataset.userId;
+          if (!userId) {
+            console.error("User ID not found");
+            return;
+          }
+
+          try {
+            const response = await fetch(`/messages/${userId}`);
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            const messages = await response.json();
+
+            const chatContainer = document.getElementById("chat-container");
+            chatContainer.innerHTML = ""; // Clear previous messages
+
+            messages.forEach((message) => {
+              const messageElement = document.createElement("div");
+              messageElement.classList.add("message");
+              messageElement.classList.add(
+                message.sender._id === "<%= user._id %>" ? "sender" : "receiver"
+              );
+
+              const timeElement = document.createElement("div");
+              timeElement.classList.add("time");
+              timeElement.innerText = new Date(
+                message.timestamp
+              ).toLocaleTimeString();
+
+              const textElement = document.createElement("div");
+              textElement.classList.add("text");
+              textElement.innerText = message.content;
+
+              const nameElement = document.createElement("div");
+              nameElement.classList.add("name");
+              nameElement.innerText =
+                message.sender._id === "<%= user._id %>"
+                  ? message.sender.name
+                  : message.receiver.name;
+
+              messageElement.appendChild(timeElement);
+              messageElement.appendChild(textElement);
+              messageElement.appendChild(nameElement);
+
+              chatContainer.appendChild(messageElement);
+            });
+
+            document.getElementById("receiver").value = userId;
+          } catch (error) {
+            console.error("Error fetching messages:", error);
+          }
+        });
+      });
+
+      document
+        .getElementById("messageForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const content = document.getElementById("content").value;
+          const receiver = document.getElementById("receiver").value;
+          const token = localStorage.getItem("jwtToken"); // Retrieve JWT token from localStorage
+
+          try {
+            const response = await fetch("/index", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ content, receiver }),
+            });
+
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            const data = await response.json();
+            alert("Message sent successfully");
+            // Optionally, you could also append the new message to the chat container dynamically here
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Error sending message");
+          }
+        });
+    </script>

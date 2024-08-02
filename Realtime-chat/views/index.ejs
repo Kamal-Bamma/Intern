@@ -3,74 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/users.css" />
     <link rel="stylesheet" href="/styles.css" />
     <title>Chat</title>
   </head>
   <body>
-    <%- include("navbar",{user:user}) %> <%- include("userView") %>
-    <div class="Container">
-      <div class="chat-container">
-        <% messages.forEach(message => { %>
-        <div
-          class="message <%= message.sender._id.toString() === user._id.toString() ? 'sender' : 'receiver' %>"
-        >
-          <div class="time">
-            <%= new Date(message.timestamp).toLocaleTimeString() %>
-          </div>
-          <div class="text"><%= message.content %></div>
-          <div class="name">
-            <%= message.sender._id.toString() === user._id.toString() ?
-            message.sender.name : message.receiver.name %>
-          </div>
-        </div>
-        <% }) %>
+    <%- include("navbar",{user:user}) %>
 
-        <form id="messageForm" class="input-container">
+    <!-- ?Display Vendor Name -->
+    <h1 class="head">Vendors</h1>
+    <div class="user-list">
+      <% users.forEach(user => { %>
+      <div class="user"><%= user.name %></div>
+      <button class="btn" data-user-id="<%= user._id %>">chat now</button>
+      <% }); %>
+    </div>
+
+    <!-- ?Display Chat Box -->
+    <div class="Container" id="container">
+      <div class="chat-container" id="chat-container">
+        <form
+          class="input-container"
+          id="messageForm"
+          method="post"
+          action="/index"
+        >
+          <input type="hidden" name="senderId" value="<%= user._id %>" />
+          <input type="hidden" name="receiverId" />
           <input
             type="text"
             name="content"
-            id="content"
-            placeholder="Enter a value..."
+            placeholder="text now..."
             required
           />
-          <input type="hidden" name="receiver" id="receiver" value" />
           <button type="submit">Send</button>
         </form>
       </div>
     </div>
 
     <script>
-      document
-        .getElementById("messageForm")
-        .addEventListener("submit", async function (event) {
+      document.addEventListener("DOMContentLoaded", function () {
+        const container = document.getElementById("container");
+        const chatButtons = document.querySelectorAll(".btn");
+        // Hide the container initially
+        container.style.display = "none";
+
+        chatButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            // Show the container when a chat button is clicked
+            container.style.display = "block";
+          });
+
+          // Set the userId in the hidden input field
+          const userId = button.getAttribute("data-user-id");
+          document.querySelector('input[name="receiverId"]').value = userId;
+        });
+
+        const messageForm = document.getElementById("messageForm");
+        messageForm.addEventListener("submit", function (event) {
           event.preventDefault();
 
-          const content = document.getElementById("content").value;
-          const receiver = document.getElementById("receiver").value;
-          const token = localStorage.getItem("jwtToken"); // Retrieve JWT token from localStorage
+          const formData = new FormData(messageForm);
+          const data = Object.fromEntries(formData.entries());
 
-          try {
-            const response = await fetch("/index", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({ content, receiver }),
+          fetch("/index", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Success:", data);
+              // Optionally clear the input field or show a success message
+              messageForm.reset();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
             });
-
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-
-            const data = await response.json();
-            alert("Message sent successfully");
-            // Optionally, you could also append the new message to the chat container dynamically here
-          } catch (error) {
-            console.error("Error:", error);
-            alert("Error sending message");
-          }
         });
+      });
     </script>
   </body>
 </html>

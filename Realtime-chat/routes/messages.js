@@ -3,13 +3,13 @@ const Message = require("../models/Message");
 const User = require("../models/Users");
 const { validationResult } = require("express-validator");
 const { authenticate } = require("../middleware/authenticateToken");
+const { text } = require("body-parser");
 const router = express.Router();
 
 router.get("/index", authenticate, async (req, res) => {
   try {
     const userId = req.user ? req.user._id : null;
     const users = await User.find({ _id: { $ne: userId } });
-    console.log(userId);
     const messages = await Message.find({
       $or: [{ sender: userId }, { receiver: userId }],
     })
@@ -23,46 +23,50 @@ router.get("/index", authenticate, async (req, res) => {
   }
 });
 
-router.get("/messages/:userId", async (req, res) => {
-  try {
-    const userId = req.user ? req.user._id : null;
-    const otherUserId = req.params.userId;
-    const messages = await Message.find({
-      $or: [
-        { sender: userId, receiver: otherUserId },
-        { sender: otherUserId, receiver: userId },
-      ],
-    })
-      .populate("sender", "name")
-      .populate("receiver", "name")
-      .sort("timestamp");
+// router.get("/messages/:userId", authenticate, async (req, res) => {
+//   try {
+//     const userId = req.user ? req.user._id : null;
+//     const otherUserId = req.params.userId;
+//     console.log(userId);
+//     console.log(otherUserId);
 
-    res.json(messages);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
+//     if (!userId || !otherUserId) {
+//       return res.status(400).send("User ID or Other User ID missing");
+//     }
+
+//     const messages = await Message.find({
+//       $or: [
+//         { sender: userId, receiver: otherUserId },
+//         { sender: otherUserId, receiver: userId },
+//       ],
+//     })
+//       .populate("sender", "name")
+//       .populate("receiver", "name")
+//       .sort("timestamp");
+
+//     res.json(messages);
+//   } catch (err) {
+//     res.status(500).send(err.message);
+//   }
+// });
 
 router.post("/index", async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   try {
-    const { content, receiver } = req.body;
-    const sender = req.user._id;
+    const { senderId, receiverId, content } = req.body;
+    console.log(req.body);
+    if (!senderId || !receiverId || !content) {
+      return res.status(400).send({ message: "Missing info" });
+    }
 
-    const message = new Message({
-      sender: sender,
-      receiver: receiver,
-      content: content,
+    const messages = new Message({
+      senderId,
+      receiverId,
+      content: [{ text: content }],
     });
-
-    await message.save();
-    res.status(201).send("Message sent successfully");
-  } catch (err) {
-    res.status(500).send({ error: "Server error", message: err.message });
+    await messages.save();
+    res.status(200).send("Message send");
+  } catch (e) {
+    res.status(500).send({ message: e.message });
   }
 });
 

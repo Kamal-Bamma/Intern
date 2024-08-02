@@ -53,6 +53,7 @@ h1 {
 }
 
 .user {
+  text-align: center;
   margin-right: 15px;
   padding: 10px;
   margin-bottom: 5px;
@@ -64,4 +65,15 @@ h1 {
 .user:hover {
   background-color: #e9e9e9;
   cursor: pointer;
+}
+
+.btn {
+  width: 70px;
+  font-size: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  margin-left: 4px;
+}
+.btn:hover {
+  background-color: #0000ee;
 }

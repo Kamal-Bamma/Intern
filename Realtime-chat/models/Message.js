@@ -2,23 +2,17 @@ const { text } = require("body-parser");
 const mongoose = require("mongoose");
 
 const messageSchema = new mongoose.Schema({
-  sender: {
+  senderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  receiver: {
+  receiverId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
   content: [
-    {
-      type: {
-        type: String,
-        required: true,
-      },
-    },
     {
       text: {
         type: String,
