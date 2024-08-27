@@ -63,6 +63,27 @@
             // Set the userId in the hidden input field
             const userId = this.getAttribute("data-user-id");
             receiverIdInput.value = userId;
+
+            // Fetch chat history
+            fetch(
+              `index/chat-history?senderId=<%= user._id %>&receiverId=${receiverId}`
+            )
+              .then((response) => response.json())
+              .then((messages) => {
+                chatContainer.innerHTML = ""; // Clear previous chat content
+                messages.forEach((message) => {
+                  const messageElement = document.createElement("div");
+                  messageElement.classList.add(
+                    "message",
+                    message.sender === "<%= user._id %>" ? "sent" : "received"
+                  );
+                  messageElement.textContent = message.content;
+                  chatContainer.appendChild(messageElement);
+                });
+              })
+              .catch((error) => {
+                console.error("Error fetching chat history:", error);
+              });
           });
         });
 
@@ -85,6 +106,12 @@
               console.log("Success:", data);
               // Optionally clear the input field or show a success message
               messageForm.reset();
+
+              // Add the new message to the chat container
+              const messageElement = document.createElement("div");
+              messageElement.classList.add("message", "sent");
+              messageElement.textContent = data.content;
+              chatContainer.appendChild(messageElement);
             })
             .catch((error) => {
               console.error("Error:", error);

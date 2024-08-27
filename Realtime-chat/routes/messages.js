@@ -51,7 +51,7 @@ router.get("/index", authenticate, async (req, res) => {
 router.post("/index", async (req, res) => {
   try {
     const { senderId, receiverId, content } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     if (!senderId || !receiverId || !content) {
       return res.status(400).send({ message: "Missing info" });
     }
@@ -72,6 +72,23 @@ router.post("/index", async (req, res) => {
     res.status(200).json("Message sent");
   } catch (e) {
     res.status(500).json({ message: e.message });
+  }
+});
+
+router.get("index/chat-history", async (req, res) => {
+  const { senderId, receiverId } = req.query;
+
+  try {
+    const messages = await Message.find({
+      $or: [
+        { sender: senderId, receiver: receiverId },
+        { sender: receiverId, receiver: senderId },
+      ],
+    }).sort({ createdAt: 1 }); // Sort by timestamp in ascending order
+
+    res.json(messages);
+  } catch (error) {
+    res.status(500).send("Server error");
   }
 });
 
